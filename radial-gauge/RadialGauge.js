@@ -252,15 +252,11 @@ const drawRadial = (props) => {
       .startAngle(targetAngle)
       .endAngle(targetAngle);
 
-      try {
-        var targetLabelLine = g
-        .append("path")
-        .attr("class", "targetLabel")
-        .attr("d", targetLabelArc);        
-      } catch (error) {
-        console.warn("d is wrong 1")
-      }
-      
+      var targetLabelLine = g
+      .append("path")
+      .attr("class", "targetLabel")
+      .attr("d", targetLabelArc);        
+
     var targetValueLine = g
       .append("text")
       .attr("class", "targetValue targetValue2")

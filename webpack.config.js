@@ -11,7 +11,7 @@ var webpackConfig = {
     contentBase: "./dist",
   },
   output: {
-    filename: "[name]_v2.js",
+    filename: "[name]_v3.js",
     path: __dirname + "/dist/",
     library: "[name]",
     libraryTarget: "umd",
