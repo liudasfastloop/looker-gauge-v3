@@ -12,7 +12,7 @@ var webpackConfig = {
   },
   output: {
     filename: "[name]_v2.js",
-    path: __dirname,
+    path: __dirname + "/dist/",
     library: "[name]",
     libraryTarget: "umd",
   },
@@ -20,7 +20,7 @@ var webpackConfig = {
     extensions: [".js"],
     modules: [path.join(__dirname, "../src"), "node_modules"],
   },
-  plugins: [new UglifyJSPlugin()],
+  // plugins: [new UglifyJSPlugin()],
   module: {
     rules: [
       { test: /\.(js|jsx)$/, use: "babel-loader" },

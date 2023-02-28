@@ -5,6 +5,9 @@ import SSF from "ssf";
 
 const RadialGauge = (props) => {
   useEffect(() => {
+    console.log("--------------------")
+    console.log(props)
+    console.log("--------------------")
     drawRadial(props);
   }, [props]);
   return <div className="viz" />;
@@ -171,7 +174,7 @@ const drawRadial = (props) => {
     props.fill_colors.map((d, i) => {
       var Jpro = i / len;
       var Jstan = props.angle * 2 * Jpro - props.angle;
-      var JiAngle = (Jstan * Math.PI * 2) / 360;
+      var JiAngle = (Jstan * Math.PI * 2) / 360;  
       var Kpro = (i + 1) / len;
       var Kstan = props.angle * 2 * Kpro - props.angle;
       var KiAngle = (Kstan * Math.PI * 2) / 360;
@@ -381,7 +384,96 @@ const drawRadial = (props) => {
       event: event,
     });
   });
+
+
+  /// LSO
+
+  ///
+
+  function addingExtraLabels(strip) {
+
+    var target_proportion = mapBetween(
+      strip,
+      0,
+      1,
+      props.range[0],
+      props.range[1]
+    );
+    var tarNeg = target_proportion < 0.5 ? -1 : 1;
+    var target_standard = props.angle * 2 * target_proportion - props.angle;
+    var targetAngle = (target_standard * Math.PI * 2) / 360;
+    var targetSpinner = d3
+      .arc()
+      .innerRadius(cutoutCalc)
+      .outerRadius(radius)
+      .startAngle(targetAngle)
+      .endAngle(targetAngle);
+      // Following lines adds the lines for labels
+    // var targetLine = g
+    //   .append("path")
+    //   .attr("class", "targetSpinner")
+    //   .attr("d", targetSpinner)
+    //   .attr("stroke", props.target_background)
+    //   .attr("stroke-width", props.target_weight / 10)
+    //   .attr("stroke-dasharray", `${props.target_length} ${props.target_gap}`);
+    // label the target spinner value
+    var targetLabelArc = d3
+      .arc()
+      .innerRadius(radius * props.target_label_padding)
+      .outerRadius(radius * props.target_label_padding)
+      .startAngle(targetAngle)
+      .endAngle(targetAngle);
+    var targetLabelLine = g
+      .append("path")
+      .attr("class", "targetLabel")
+      .attr("d", targetLabelArc);
+    var targetValueLine = g
+      .append("text")
+      .attr("class", "targetValue targetValue2")
+      .text(`${strip}`)
+      .style("font-size", `${props.target_label_font}${limiting_aspect}`)
+      .style("font-family", "Arial, Helvetica, sans-serif")
+      .attr("dy", ".35em");
+    targetValueLine
+      .attr("x", () => {
+        if (tarNeg > 0) {
+          return targetLabelLine.node().getBBox().x;
+        } else {
+          return (
+            targetLabelLine.node().getBBox().x -
+            targetValueLine.node().getBBox().width
+          );
+        }
+      })
+      .attr("y", () => {
+        return targetLabelLine.node().getBBox().y;
+      });
+
+  }
+
+  let minAdd = 1;
+  if (!Number.isInteger(props.range[0])) {
+    minAdd = 2;
+  }
+  let maxAdd = -1;
+  if (!Number.isInteger(props.range[1])) {
+    maxAdd = -2;
+  }
+
+  if (props.range_strips_labels == "yes") {
+    let minStrip = Math.floor(props.range[0]) + minAdd;
+    let maxStrip = Math.ceil(props.range[1]) + maxAdd;
+
+    for(let i = minStrip; i <= maxStrip; i++) {
+      addingExtraLabels(i);  
+    }
+  }
+
+  /// EOC LSO
+
+  // TARGET LINE
   // find what percent of the gauge is equivalent to the target value
+
   if (props.target_source !== "off") {
     if (props.target_label_type === "both") {
       var target_proportion = mapBetween(
@@ -420,7 +512,7 @@ const drawRadial = (props) => {
         .attr("d", targetLabelArc);
       var targetValueLine = g
         .append("text")
-        .attr("class", "targetValue")
+        .attr("class", "targetValue targetValue2")
         .text(`${props.target_rendered} ${props.target_label}`)
         .style("font-size", `${props.target_label_font}${limiting_aspect}`)
         .style("font-family", "Arial, Helvetica, sans-serif")
@@ -477,6 +569,7 @@ const drawRadial = (props) => {
       var targetValueLine = g
         .append("text")
         .attr("class", "targetValue")
+        .attr("class", "targetValue3")
         .text(`${props.target_rendered} ${props.target_dimension}`)
         .style("font-size", `${props.target_label_font}${limiting_aspect}`)
         .style("font-family", "Arial, Helvetica, sans-serif")
@@ -533,6 +626,7 @@ const drawRadial = (props) => {
       var targetValueText = g
         .append("text")
         .attr("class", "targetValue")
+        .attr("class", "targetValue4")
         .text(`${props.target_dimension}`)
         .style("font-size", `${props.target_label_font}${limiting_aspect}`)
         .style("font-family", "Arial, Helvetica, sans-serif")
@@ -589,6 +683,7 @@ const drawRadial = (props) => {
       var targetValueText = g
         .append("text")
         .attr("class", "targetValue")
+        .attr("class", "targetValue5")
         .text(`${props.target_rendered}`)
         .style("font-size", `${props.target_label_font}${limiting_aspect}`)
         .style("font-family", "Arial, Helvetica, sans-serif")
@@ -645,6 +740,7 @@ const drawRadial = (props) => {
       var targetValueText = g
         .append("text")
         .attr("class", "targetValue")
+        .attr("class", "targetValue6")
         .text(`${props.target_label}`)
         .style("font-size", `${props.target_label_font}${limiting_aspect}`)
         .style("font-family", "Arial, Helvetica, sans-serif")

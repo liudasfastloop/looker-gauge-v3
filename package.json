@@ -4,9 +4,9 @@
   "description": "",
   "main": "",
   "scripts": {
-    "build": "webpack --config webpack.config.js",
-    "start": "webpack-dev-server --open",
-    "watch": "webpack --config webpack.config.js --watch --progress",
+    "build": "export SET NODE_OPTIONS=--openssl-legacy-provider && webpack --config webpack.config.js",
+    "start": "export SET NODE_OPTIONS=--openssl-legacy-provider && webpack-dev-server --open",
+    "watch": "export SET NODE_OPTIONS=--openssl-legacy-provider && webpack --config webpack.config.js --watch --progress",
     "format": "prettier --ignore-path .gitignore --write '**/*.js'"
   },
   "author": "Noah MacDonald <noahmac@google.com>",

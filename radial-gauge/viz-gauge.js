@@ -413,6 +413,20 @@ looker.plugins.visualizations.add({
       default: DEFAULT_MAX_RANGE,
       display_size: "half",
     },
+
+    range_strips_labels: {
+      type: "string",
+      label: "Show range strip labels?",
+      section: "Plot",
+      display: "select",
+      values: [
+      	 {"Yes": "yes"},
+      	 {"No": "no"},
+      ],
+      default: "no",
+      order: 35,
+    },
+    
     value_label_type: {
       type: "string",
       label: "Value Label Type",
@@ -791,6 +805,7 @@ looker.plugins.visualizations.add({
         value: chunk.value > config.range_max ? config.range_max : chunk.value,
         // value: config.dev_value,
         // value_rendered: config.dev_value.toString(),
+        range_strips_labels: config.range_strips_labels,
         value_rendered: chunk.value_rendered,
         target:
           chunk.target > config.range_max ? config.range_max : chunk.target,
@@ -859,6 +874,7 @@ looker.plugins.visualizations.add({
           gauge_background: config.background_color,
           range: [config.range_min, config.range_max],
           value: d.value > config.range_max ? config.range_max : d.value,
+          range_strips_labels: config.range_strips_labels,
           value_rendered: d.value_rendered,
           target: d.target > config.range_max ? config.range_max : d.target,
           value_label: d.value_label,
