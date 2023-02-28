@@ -427,6 +427,19 @@ looker.plugins.visualizations.add({
       order: 35,
     },
     
+    range_strips_lines: {
+      type: "string",
+      label: "Show range strip lines?",
+      section: "Plot",
+      display: "select",
+      values: [
+      	 {"Yes": "yes"},
+      	 {"No": "no"},
+      ],
+      default: "no",
+      order: 36,
+    },
+
     value_label_type: {
       type: "string",
       label: "Value Label Type",
@@ -608,6 +621,22 @@ looker.plugins.visualizations.add({
       default: ["#7FCDAE", "#ffed6f", "#EE7772"],
       display: "colors",
       order: 11,
+    },
+    strip_lines_colors: {
+      type: "string",
+      label: "Strip Lines Colors",
+      section: "Style",
+      default: "#CECECE",
+      display: "color",
+      order: 12,
+    },
+    strip_labels_colors: {
+      type: "string",
+      label: "Strip Labels Colors",
+      section: "Style",
+      default: "#282828",
+      display: "color",
+      order: 12,
     },
     viz_trellis_by: {
       type: "string",
@@ -806,6 +835,7 @@ looker.plugins.visualizations.add({
         // value: config.dev_value,
         // value_rendered: config.dev_value.toString(),
         range_strips_labels: config.range_strips_labels,
+        range_strips_lines: config.range_strips_lines,
         value_rendered: chunk.value_rendered,
         target:
           chunk.target > config.range_max ? config.range_max : chunk.target,
@@ -822,6 +852,9 @@ looker.plugins.visualizations.add({
         gauge_fill_type: config.gauge_fill_type,
         fill_colors: config.fill_colors,
         range_color: config.range_color,
+
+        strip_lines_colors: config.strip_lines_colors,
+        strip_labels_colors: config.strip_labels_colors,
 
         spinner: config.spinner_length, // SPINNER SETTINGS
         spinner_weight: config.spinner_weight,
@@ -875,6 +908,7 @@ looker.plugins.visualizations.add({
           range: [config.range_min, config.range_max],
           value: d.value > config.range_max ? config.range_max : d.value,
           range_strips_labels: config.range_strips_labels,
+          range_strips_lines: config.range_strips_lines,
           value_rendered: d.value_rendered,
           target: d.target > config.range_max ? config.range_max : d.target,
           value_label: d.value_label,
@@ -890,6 +924,10 @@ looker.plugins.visualizations.add({
           gauge_fill_type: config.gauge_fill_type,
           fill_colors: config.fill_colors,
           range_color: config.range_color,
+
+          strip_lines_colors: config.strip_lines_colors,
+          strip_labels_colors: config.strip_labels_colors,
+          
 
           spinner: config.spinner_length, // SPINNER SETTINGS
           spinner_weight: config.spinner_weight,

@@ -5,9 +5,9 @@ import SSF from "ssf";
 
 const RadialGauge = (props) => {
   useEffect(() => {
-    console.log("--------------------")
+    console.log("---------+++++-----------")
     console.log(props)
-    console.log("--------------------")
+    console.log("-----------++++++---------")
     drawRadial(props);
   }, [props]);
   return <div className="viz" />;
@@ -210,6 +210,106 @@ const drawRadial = (props) => {
       .attr("stroke", `${props.fill_colors[which]}`)
       .attr("stroke-width", "1px");
   }
+
+
+  /// LSO
+
+  ///
+
+  function addingExtraLabels(strip) {
+
+    var target_proportion = mapBetween(
+      strip,
+      0,
+      1,
+      props.range[0],
+      props.range[1]
+    );
+    var tarNeg = target_proportion < 0.5 ? -1 : 1;
+    var target_standard = props.angle * 2 * target_proportion - props.angle;
+    var targetAngle = (target_standard * Math.PI * 2) / 360;
+    var targetSpinner = d3
+      .arc()
+      .innerRadius(cutoutCalc)
+      .outerRadius(radius)
+      .startAngle(targetAngle)
+      .endAngle(targetAngle);
+      // Following lines adds the lines for labels
+    if(props.range_strips_lines == "yes") {
+      var targetLine = g
+        .append("path")
+        .attr("class", "targetSpinner")
+        .attr("d", targetSpinner)
+        .attr("stroke", props.strip_lines_colors)
+        .attr("stroke-width", props.target_weight / 20)
+        .attr("stroke-dasharray", "1, 5");
+    }
+    // label the target spinner value
+    var targetLabelArc = d3
+      .arc()
+      .innerRadius(radius * props.target_label_padding)
+      .outerRadius(radius * props.target_label_padding)
+      .startAngle(targetAngle)
+      .endAngle(targetAngle);
+
+      try {
+        var targetLabelLine = g
+        .append("path")
+        .attr("class", "targetLabel")
+        .attr("d", targetLabelArc);        
+      } catch (error) {
+        console.warn("d is wrong 1")
+      }
+      
+    var targetValueLine = g
+      .append("text")
+      .attr("class", "targetValue targetValue2")
+      .text(`${strip}`)
+      .style("font-size", `${props.target_label_font}${limiting_aspect}`)
+      .style("font-family", "Arial, Helvetica, sans-serif")
+      .style("fill", `${props.strip_labels_colors}`)
+      .attr("dy", "0.35em");
+    targetValueLine
+      .attr("x", () => {
+        if (tarNeg > 0) {
+          return targetLabelLine.node().getBBox().x - 1;
+        } else {
+          return (
+            targetLabelLine.node().getBBox().x -
+            targetValueLine.node().getBBox().width - 1
+          );
+        }
+      })
+      .attr("y", () => {
+        return targetLabelLine.node().getBBox().y;
+      });
+
+  }
+
+  let minAdd = 1;
+  if (!Number.isInteger(props.range[0])) {
+    minAdd = 2;
+  }
+  let maxAdd = -1;
+  if (!Number.isInteger(props.range[1])) {
+    maxAdd = -2;
+  }
+
+  if (props.range_strips_labels == "yes") {
+    let minStrip = Math.floor(props.range[0]) + minAdd;
+    let maxStrip = Math.ceil(props.range[1]) + maxAdd;
+
+    for(let i = minStrip; i <= maxStrip; i++) {
+      if(i != props.target) {
+        addingExtraLabels(i);  
+      }
+    }
+  }
+
+  /// EOC LSO
+
+
+
   // creates a left arm border
   var leftArmArc = d3
     .arc()
@@ -386,90 +486,7 @@ const drawRadial = (props) => {
   });
 
 
-  /// LSO
 
-  ///
-
-  function addingExtraLabels(strip) {
-
-    var target_proportion = mapBetween(
-      strip,
-      0,
-      1,
-      props.range[0],
-      props.range[1]
-    );
-    var tarNeg = target_proportion < 0.5 ? -1 : 1;
-    var target_standard = props.angle * 2 * target_proportion - props.angle;
-    var targetAngle = (target_standard * Math.PI * 2) / 360;
-    var targetSpinner = d3
-      .arc()
-      .innerRadius(cutoutCalc)
-      .outerRadius(radius)
-      .startAngle(targetAngle)
-      .endAngle(targetAngle);
-      // Following lines adds the lines for labels
-    // var targetLine = g
-    //   .append("path")
-    //   .attr("class", "targetSpinner")
-    //   .attr("d", targetSpinner)
-    //   .attr("stroke", props.target_background)
-    //   .attr("stroke-width", props.target_weight / 10)
-    //   .attr("stroke-dasharray", `${props.target_length} ${props.target_gap}`);
-    // label the target spinner value
-    var targetLabelArc = d3
-      .arc()
-      .innerRadius(radius * props.target_label_padding)
-      .outerRadius(radius * props.target_label_padding)
-      .startAngle(targetAngle)
-      .endAngle(targetAngle);
-    var targetLabelLine = g
-      .append("path")
-      .attr("class", "targetLabel")
-      .attr("d", targetLabelArc);
-    var targetValueLine = g
-      .append("text")
-      .attr("class", "targetValue targetValue2")
-      .text(`${strip}`)
-      .style("font-size", `${props.target_label_font}${limiting_aspect}`)
-      .style("font-family", "Arial, Helvetica, sans-serif")
-      .attr("dy", ".35em");
-    targetValueLine
-      .attr("x", () => {
-        if (tarNeg > 0) {
-          return targetLabelLine.node().getBBox().x;
-        } else {
-          return (
-            targetLabelLine.node().getBBox().x -
-            targetValueLine.node().getBBox().width
-          );
-        }
-      })
-      .attr("y", () => {
-        return targetLabelLine.node().getBBox().y;
-      });
-
-  }
-
-  let minAdd = 1;
-  if (!Number.isInteger(props.range[0])) {
-    minAdd = 2;
-  }
-  let maxAdd = -1;
-  if (!Number.isInteger(props.range[1])) {
-    maxAdd = -2;
-  }
-
-  if (props.range_strips_labels == "yes") {
-    let minStrip = Math.floor(props.range[0]) + minAdd;
-    let maxStrip = Math.ceil(props.range[1]) + maxAdd;
-
-    for(let i = minStrip; i <= maxStrip; i++) {
-      addingExtraLabels(i);  
-    }
-  }
-
-  /// EOC LSO
 
   // TARGET LINE
   // find what percent of the gauge is equivalent to the target value
