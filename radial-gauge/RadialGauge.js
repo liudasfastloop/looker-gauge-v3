@@ -5,9 +5,6 @@ import SSF from "ssf";
 
 const RadialGauge = (props) => {
   useEffect(() => {
-    console.log("---------+++++-----------")
-    console.log(props)
-    console.log("-----------++++++---------")
     drawRadial(props);
   }, [props]);
   return <div className="viz" />;
